@@ -30,7 +30,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
@@ -100,11 +100,12 @@
           <div class="col-sm-12 col-md-8">
            <div class="row" id="products">
     </div>
+    
          
          
    </main>
    
- <!-- Modal -->
+ 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -160,6 +161,21 @@
     
    
    </style>
+    <div class = "row">
+      <div class="container text-center">
+        <div class="row">
+          <div class="col">
+            
+          </div>
+          <div class="col" id="linkCardGrid">
+            <button id="loadMoreButton" type="button" class="btn btn-primary mt-5 mb-5">See more.</button>
+          </div>
+          <div class="col">
+           
+          </div>
+        </div>
+      </div>
+    </div>
 
  </body>
 
@@ -203,7 +219,8 @@
 
       getProductCategories();
 
-      async function getProducts(url = 'https://dummyjson.com/products?limit=100' ) {
+
+      async function getProducts(url = 'https://dummyjson.com/products?limit=52' ) {
         const response = await fetch(url);
         const data = await response.json();
         productsContainer.innerHTML = "";
@@ -282,6 +299,45 @@
         });
       }
       getProducts();
+
+      const linkCardGrid = document.getElementById('linkCardGrid');
+      const loadMoreButton = document.getElementById('loadMoreButton');
+      let page = 1;
+      const postPerPage = 24;
+      const loadLinks = async () => {
+        const skip = (page -1) * postPerPage;
+      const paginatedURL = 'https://dummyjson.com/docs/products?limit=${postPerPage}&skip=${skip}';
+      const allProductsUrl = 'https://dummyjson.com/docs/products?limit=52';
+
+      const {products} = await fetch(allProductsUrl).then((res) =>res.json()
+      );
+      const htmlString = products
+        .map(
+        (product) => `<div id = "linkCardGrid">
+                <img src = "${product.images[0]}"/>
+               <h5>${product.title}</h5>
+           </div>`
+      )
+          
+      .join('');
+
+      if (linkCardGrid) {
+        linkCardGrid.innerHTML += htmlString;
+      }
+    };
+
+    loadMoreButton.addEventListener('click', () => {
+      page++;
+      loadLinks();
+    });
+
+    loadLinks();
+   
+    
     </script>
+      
+      
+
+  
   
 </html>
